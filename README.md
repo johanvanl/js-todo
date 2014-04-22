@@ -1,4 +1,6 @@
-js-todo
+JS-TODO
 =======
 
-TODO list in JavaScript
+A TODO list in JavaScript.
+
+Got the idea from [imLinder](https://github.com/imLinder/1kB-todo-list), I made my own version as a learning experience.

@@ -6,11 +6,7 @@ function add() {
     var new_todo_text = document.getElementById('newItem').value;
     var item = document.createElement('li');
     item.appendChild(document.createTextNode(new_todo_text + ''));
-    if (items.firstChild) {
-        items.insertBefore(item, items.firstChild);
-    } else {
-        items.insertBefore(item);
-    }
+    items.insertBefore(item, items.firstChild);
     
     document.getElementById('newItem').value = '';
     

@@ -1,38 +1,77 @@
 
-function add() {
-    if (document.getElementById('newItem').value == ''){
-        return;
+$(document).ready(function() {
+
+  $('#title').click(function() {
+    $('#helpText').toggle();
+  });
+  
+  $('#newItem').keypress(function(event) {
+    if (event.keyCode == 13) {
+      add();
     }
-    var new_todo_text = document.getElementById('newItem').value;
-    var item = document.createElement('li');
-    item.appendChild(document.createTextNode(new_todo_text + ''));
-    items.insertBefore(item, items.firstChild);
-    
-    document.getElementById('newItem').value = '';
-    
-    localStorage.setItem('storedItems', items.innerHTML); 
-}
+  });
 
-function changeElementColorBack(element) {
-    element.style.color = 'black';
-}
-
-if (localStorage.getItem('storedItems')) {
-    items.innerHTML = localStorage.getItem('storedItems');
-}
-
-document.getElementById('items').addEventListener('click', function(event) {
-    if (event.target.style.color == 'red') {
-        event.target.remove();
-        localStorage.setItem('storedItems', items.innerHTML); 
+  var add = function() {
+    if ($('#newItem').val() == ''){
+      return;
     }
-    event.target.style.color = 'red';
-    setTimeout(function(){changeElementColorBack(event.target)}, 5000);
-}, false);
-
-document.getElementById('title').addEventListener('click', function(event) {
-    var element = document.getElementById('helpText');
-        element.innerHTML = 'Add an item with the ENTER button. To remove an item click on the item to change it to red and to confirm the removal click on the item again (while still red). If accidentally clicked on an item, don\'t worry the item only stays red for a short while.</br></br>';
-        element.innerHTML = element.innerHTML  + 'created by <a href="https://github.com/liloboy">Liloboy</a></br></br>';
-        element.innerHTML = element.innerHTML  + '<a href="https://github.com/liloboy/js-todo">source code and readme</a></br></br>';
-}, false);
+    
+    var items = [];    
+    if (localStorage.getItem('storedItems')) {
+      items = JSON.parse(localStorage.getItem('storedItems'));
+      for (var i = 0; i < items.length; i++) {
+        if (items[0] == $('#newItem').val()) {
+          alert('The item is already in your TODO list!');
+          return;
+        }
+      }
+    }
+    
+    $('#items').prepend($("<li></li>").html($('#newItem').val()));
+    
+    items.unshift($('#newItem').val());
+    $('#newItem').val('');
+    
+    localStorage.setItem('storedItems', JSON.stringify(items));
+  };
+  
+  $('#items').on('click', 'li', function() {
+    if ($(this).data('timer') == 'true') {
+      $(this).remove();
+      
+      items = JSON.parse(localStorage.getItem('storedItems'));
+      for (var i = 0; i < items.length; i++) {
+        if ($(this).text() == items[i]) {
+          items.splice(i, 1);
+          localStorage.setItem('storedItems', JSON.stringify(items));
+          return;
+        }
+      }
+      return;
+    }
+    
+    $(this).data('timer', 'true');
+    $(this).css('color', 'red');
+    
+    var revertTimer = function(that) {
+      $(that).data('timer', 'false');
+      $(that).css('color', 'black');
+    };
+    
+    setTimeout(revertTimer, 3000, this);
+  });
+  
+  var init = function() {
+    $('#helpText').hide();
+    
+    if (localStorage.getItem('storedItems')) {
+      items = JSON.parse(localStorage.getItem('storedItems'));
+      for (var i = 0; i < items.length; i++) {
+        $('#items').append($("<li></li>").html(items[i]));
+      }
+    }
+  };
+  
+  init();
+  
+});

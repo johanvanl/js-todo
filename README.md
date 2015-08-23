@@ -1,4 +1,4 @@
-JS-To-Do
+JS To-Do
 =======
 
 A To-Do list in JavaScript, which can be used [HERE](http://johanvanl.github.io/js-todo/).
